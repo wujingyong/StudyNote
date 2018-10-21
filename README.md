@@ -1,1 +1,1 @@
-# studyNote
+# StudyNote
