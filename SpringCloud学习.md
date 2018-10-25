@@ -135,3 +135,48 @@
        }
    }
    ```
+
+
+
+## 使用consul配置feign
+
+1. `下载安装consul`
+
+2. `启动dev模式`  consul agent -dev
+
+3. `添加pom依赖`
+
+   ```xml
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+   </dependency>
+   <dependency>
+       <groupId>org.springframework.cloud</groupId>
+       <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+   </dependency>
+   ```
+
+4. `配置SpringBootApplication` `启用服务注册 @EnableDiscoveryClient`
+
+   ```java
+   @SpringBootApplication
+   @EnableSwagger2
+   @EnableDiscoveryClient  //启动自动注册
+   @EnableCircuitBreaker
+   public class DeptProvider8001_App {
+       public static void main(String[] args) {
+           SpringApplication.run(DeptProvider8001_App.class,args);
+       }
+   }
+   ```
+
+5. `tips` 
+
+   ```text
+   springcloud版本不要使用Dalston.SR1 
+   否则默认使用spring-cloud-starter-consul-discovery的1.2版本，此版本consul有bug，会导致localhost:port/health状态为down
+   改用Edgware.SR5（或以上），默认的spring-cloud-starter-consul-discovery为1.3.5版本，得以解决
+   ```
+
+6. ``访问consul-ui``  localhost:8500
