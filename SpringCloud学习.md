@@ -14,7 +14,7 @@
 
 1. pom.xml依赖 
 
-   ```xm
+   ```xml
    <dependencies>
            <!-- springCloud Config -->
            <dependency>
