@@ -180,3 +180,77 @@
    ```
 
 6. ``访问consul-ui``  localhost:8500
+
+## springcloud gateway 注册到consul
+
+1. `pom文件` 修改pom文件的springcloud版本和springboot版本（gateway要求springboot 2.x）
+
+   ```xml
+   <dependencyManagement>
+       <dependencies>
+           <dependency>
+               <groupId>org.springframework.cloud</groupId>
+               <artifactId>spring-cloud-dependencies</artifactId>
+               <version>Finchley.SR2</version>
+               <type>pom</type>
+               <scope>import</scope>
+           </dependency>
+           <dependency>
+               <groupId>org.springframework.boot</groupId>
+               <artifactId>spring-boot-dependencies</artifactId>
+               <version>2.0.1.RELEASE</version>
+               <type>pom</type>
+               <scope>import</scope>
+           </dependency>
+       </dependencies>
+   </dependencyManagement>
+   
+   <dependencies>
+       <dependency>
+           <groupId>org.springframework.cloud</groupId>
+           <artifactId>spring-cloud-starter-gateway</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.boot</groupId>
+           <artifactId>spring-boot-starter-actuator</artifactId>
+       </dependency>
+       <dependency>
+           <groupId>org.springframework.cloud</groupId>
+           <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+       </dependency>
+   </dependencies>
+   ```
+
+2. `修改application.yml` 配置路由
+
+   ```yml
+   spring:
+     application:
+       name: springcloud-gateway
+     cloud:
+       gateway:
+         routes:
+         - id: feign  # 模块id
+           uri: http://localhost:80 #调用的URL相对于当前服务所在机器
+           predicates:
+           - Path=/wjy/feign/**    # 过滤路径
+           filters:
+           - StripPrefix=2 # 过滤层数 (相当于访问了 http://localhost:80/**)
+         discovery:
+           locator:
+             enabled: true  #开启基于注册中心创建路由
+   ```
+
+3. `启动类`
+
+   ```java
+   @SpringBootApplication
+   @EnableDiscoveryClient
+   public class GateWayApplication {
+       public static void main(String[] args) {
+           SpringApplication.run(GateWayApplication.class, args);
+       }
+   }
+   ```
+
+
