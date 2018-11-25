@@ -27,7 +27,7 @@ docker run -d -it -p 50070:50070 -p 8088:8088 -p 8042:8042 --privileged=true --n
 >
 > 2. 配置hadoop环境 `bin + sbin`
 >
-> 3. 指定hadoop下 `etc/hadoop/hadoop-env.sh`文件的`JAVA_HOME（也可采用默认配置，系统配置的JAVA_HOME）`
+> 3. 指定hadoop下 `etc/hadoop/hadoop-env.sh`文件的`JAVA_HOM`
 >
 > 4. 测试wordCount 
 >
@@ -53,7 +53,8 @@ docker run -d -it -p 50070:50070 -p 8088:8088 -p 8042:8042 --privileged=true --n
 >    > <!-- 指定HDFS中NameNode地址 -->
 >    > <property>
 >    >     <name>fs.defaultFS</name>
->    >     <value>hdfs://127.0.0.1:8020</value>
+>    >     <!-- 本机ip地址（不能为127.0.0.1，否则调用9000端口不通） -->
+>    >     <value>hdfs://ip:9000</value>
 >    > </property>
 >    > <!-- 指定hadoop运行时产生文件的存储地址 -->
 >    > <property>
@@ -220,7 +221,7 @@ nodemanager		resourcemanager		nodemanager
 > >    <!-- 指定HDFS中NameNode地址 -->
 > >    <property>
 > >        <name>fs.defaultFS</name>
-> >        <value>hdfs://hadoop01:8020</value>
+> >        <value>hdfs://hadoop01:9000</value>
 > >    </property>
 > >    <!-- 指定hadoop运行时产生文件的存储地址 -->
 > >    <property>
@@ -296,3 +297,31 @@ nodemanager		resourcemanager		nodemanager
 > >    ```
 > >
 > > 2. 用jps验证各节点启动情况
+
+## hdf操作练习（需要配本地环境变量，详情查看尚硅谷hdfs配置文档3.1）
+
+1. mkdirs `创建目录`
+
+   ```java
+   @Test
+   public void testMkdirs() throws IOException, InterruptedException, URISyntaxException {
+   
+       // 1 获取文件系统
+       Configuration configuration = new Configuration();
+   
+       FileSystem fs = FileSystem.get(new URI("hdfs://hadoop133:9000"), configuration, "root");
+   
+       // 2 创建目录
+       fs.mkdirs(new Path("/daxian/banzhang"));
+   
+       // 3 关闭资源
+       fs.close();
+   }
+   ```
+
+2. delete `删除文件/文件夹`
+
+3. copyFromLocalFile `从本地复制文件到hdfs`
+
+4. rename `重命名`
+
